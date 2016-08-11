@@ -27,119 +27,6 @@ public class ManagementSystem {
 		return instance;
 	}
 	
-	public static void main(String[] args) {
-		
-		ManagementSystem ms = ManagementSystem.getInstance();
-		
-		//print full list of groups
-		System.out.println("Full list of Groups");
-		System.out.println("-------------------");
-		List<Group> allGroups = ms.getGroups();
-		for(Group g : allGroups) {
-			System.out.println(g);
-		}
-		System.out.println();
-		
-		//print full list of students
-		System.out.println("Full list of Students");
-		System.out.println("---------------------");
-		Collection<Student> allStudents = ms.getAllStudents();
-		for(Student s : allStudents) {
-			System.out.println(s);
-		}
-		System.out.println();
-		
-		//print students list by group
-		System.out.println("Students list by Group");
-		System.out.println("----------------------");
-		List<Group> groups = ms.getGroups();
-		for(Group g : groups) {
-			System.out.println("---> Group:" + g.getNameGroup());
-			Collection<Student> students = ms.getStudentsFromGroup(g, 2016);
-			for (Student s : students) {
-				System.out.println(s);
-			}
-		}
-		System.out.println();
-		
-		//create new student and add it into list
-		Student s = new Student();
-		s.setStudentId(5);
-		s.setFirstName("Mike");
-		s.setLastName("Plank");
-		s.setSex('M');
-		Calendar c = Calendar.getInstance();
-		c.set(2001, 8, 18);
-		s.setDateOfBirth(c.getTime());
-		s.setGroupId(1);
-		s.setEducationYear(2016);
-		System.out.println("Adding student:" + s);
-		System.out.println("---------------");
-		ms.insertStudent(s);
-		System.out.println("Full list of students after adding");
-		allStudents = ms.getAllStudents();
-		for (Student st : allStudents) {
-			System.out.println(st);
-		}
-		System.out.println();
-		
-		//updating student's last name
-		s = new Student();
-		s.setStudentId(5);
-		s.setFirstName("Mike");
-		s.setLastName("MacPlank");
-		s.setSex('M');
-		c = Calendar.getInstance();
-		c.set(2001, 8, 18);
-		s.setDateOfBirth(c.getTime());
-		s.setGroupId(1);
-		s.setEducationYear(2016);
-		System.out.println("Updating student:" + s);
-		System.out.println("-----------------");
-		ms.updateStudent(s);
-		System.out.println("Full list of students after adding");
-		allStudents = ms.getAllStudents();
-		for (Student st : allStudents) {
-			System.out.println(st);
-		}
-		System.out.println();
-		
-		//Remove student
-		System.out.println("Removing student:" + s);
-		System.out.println("-----------------");
-		ms.deleteStudent(s);
-		System.out.println("Full list of students after removing");
-		allStudents = ms.getAllStudents();
-		for (Student st : allStudents) {
-			System.out.println(st);
-		}
-		System.out.println();
-		
-		//moving students from one group to another
-		Group g1 = groups.get(0);
-		Group g2 = groups.get(1);
-		System.out.println("Moving students from 1st to 2nd group");
-		System.out.println("-------------------------------------");
-		ms.moveStudentsToGroup(g1, 2016, g2, 2017);
-		System.out.println("Full list of students after moving");
-		allStudents = ms.getAllStudents();
-		for (Student st : allStudents) {
-			System.out.println(st);
-		}
-		System.out.println();
-		
-		//removing students from group
-		System.out.println("Removing students from group:" + g2 + " in 2016 year");
-		System.out.println("-----------------------------");
-		ms.removeStudentsFromGroup(g2, 2016);
-		System.out.println("Full list of students after removing");
-		allStudents = ms.getAllStudents();
-		for (Student st : allStudents) {
-			System.out.println(st);
-		}
-		System.out.println();
-	}
-	
 	public void loadGroups() {
 		if (groups == null) {
 			groups = new ArrayList<Group>();
@@ -222,7 +109,7 @@ public class ManagementSystem {
 		return groups;
 	}
 	
-	private Collection<Student> getAllStudents() {
+	public Collection<Student> getAllStudents() {
 		return students;
 	}
 	
