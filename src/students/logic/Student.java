@@ -4,7 +4,7 @@ import java.text.Collator;
 import java.text.DateFormat;
 import java.util.Date;
 
-public class Student {
+public class Student implements Comparable<Object> {
 	
 	//Student fields
 	private int studentId;
