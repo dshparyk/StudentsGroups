@@ -3,6 +3,7 @@
 bin
 target/
 build/
+lib/
 .classpath
 .project
 .DS_Store

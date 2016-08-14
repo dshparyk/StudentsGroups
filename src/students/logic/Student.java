@@ -1,5 +1,7 @@
 package students.logic;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.Collator;
 import java.text.DateFormat;
 import java.util.Date;
@@ -14,6 +16,16 @@ public class Student implements Comparable<Object> {
 	private char sex;
 	private int groupId;
 	private int educationYear;
+	
+	public Student(ResultSet rs) throws SQLException {
+		setStudentId(rs.getInt(1));
+		setFirstName(rs.getString(2));
+		setLastName(rs.getString(3));
+		setSex(rs.getString(4).charAt(0));
+		setDateOfBirth(rs.getDate(5));
+		setGroupId(rs.getInt(6));
+		setEducationYear(rs.getInt(7));
+	}
 	
 	//getters and setters for student fields
 	public Date getDateOfBirth() {

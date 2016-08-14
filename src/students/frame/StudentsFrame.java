@@ -22,12 +22,12 @@ import students.logic.Student;
 public class StudentsFrame extends JFrame{
 
 	//creating groupList, studentList and Year
-	ManagementSystem ms = ManagementSystem.getInstance();
+	ManagementSystem ms = null;
 	private JList<Object> grpList;
 	private JList<Object> stdList;
 	private JSpinner spYear;
 	
-	public StudentsFrame() {
+	public StudentsFrame() throws Exception{
 		
 		//Setup layout for client part of form
 		getContentPane().setLayout(new BorderLayout());
@@ -51,8 +51,15 @@ public class StudentsFrame extends JFrame{
 		left.setLayout(new BorderLayout());
 		left.setBorder(new BevelBorder(BevelBorder.RAISED));
 		
-		//getting Vector of groups
-		Vector<Group> gr = new Vector<Group>(ms.getGroups());
+		//We need to handle error with connection to DB
+		Vector<Group> gr = null;
+		Vector<Student> st = null;
+		//trying to get connection on DB
+		ms = ManagementSystem.getInstance();
+		//Getting groups list
+		gr = new Vector<Group>(ms.getGroups());
+		//Getting students list
+		st = new Vector<Student>(ms.getAllStudents());
 		left.add(new JLabel("Groups:"), BorderLayout.NORTH);
 		//creating list add adding it to scroll panel
 		grpList = new JList<Object>(gr);
@@ -63,8 +70,7 @@ public class StudentsFrame extends JFrame{
 		right.setLayout(new BorderLayout());
 		right.setBorder(new BevelBorder(BevelBorder.RAISED));
 		
-		//getting students list
-		Vector<Student> st = new Vector<Student>(ms.getAllStudents());
+		//adding students label
 		right.add(new JLabel("Students:"), BorderLayout.NORTH);
 		//creating list add adding it to scroll panel
 		stdList = new JList<Object>(st);
@@ -74,7 +80,7 @@ public class StudentsFrame extends JFrame{
 		bot.add(left, BorderLayout.WEST);
 		bot.add(right, BorderLayout.CENTER);
 		
-		//adding top and bot panels into form
+		//adding top and bottom panels into form
 		getContentPane().add(top, BorderLayout.NORTH);
 		getContentPane().add(bot, BorderLayout.CENTER);
 		
@@ -84,16 +90,14 @@ public class StudentsFrame extends JFrame{
 	public static void main(String args[]) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				StudentsFrame sf = new StudentsFrame();
-				sf.setDefaultCloseOperation(EXIT_ON_CLOSE);
-				sf.setVisible(true);
+				try {
+					StudentsFrame sf = new StudentsFrame();
+					sf.setDefaultCloseOperation(EXIT_ON_CLOSE);
+					sf.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
-//	public static void main(String args[]) {
-//		StudentsFrame sf = new StudentsFrame();
-//		sf.setDefaultCloseOperation(EXIT_ON_CLOSE);
-//		sf.setVisible(true);
-//	}
-	
 }
