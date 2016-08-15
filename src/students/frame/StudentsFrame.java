@@ -1,10 +1,12 @@
 package students.frame;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -14,6 +16,7 @@ import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
@@ -22,11 +25,15 @@ import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import students.logic.Group;
 import students.logic.ManagementSystem;
 
-public class StudentsFrame extends JFrame{
+public class StudentsFrame extends JFrame implements ActionListener, ListSelectionListener, ChangeListener{
 	
 	private static final String MOVE_GR = "moveGroup";
 	private static final String CLEAR_GR = "clearGroup";
@@ -36,7 +43,7 @@ public class StudentsFrame extends JFrame{
 	private static final String ALL_STUDENTS = "allStudent";
 	
 	//creating groupList, studentList and Year
-	ManagementSystem ms = null;
+	private ManagementSystem ms = null;
 	private JList<Object> grpList;
 	private JTable stdList;
 	private JSpinner spYear;
@@ -51,6 +58,7 @@ public class StudentsFrame extends JFrame{
 		JMenu menu = new JMenu("Reports");
 		JMenuItem menuItem = new JMenuItem("All Students");
 		menuItem.setName(ALL_STUDENTS);
+		menuItem.addActionListener(this);
 		menu.add(menuItem);
 		menuBar.add(menu);
 		setJMenuBar(menuBar);
@@ -63,6 +71,7 @@ public class StudentsFrame extends JFrame{
 		//Adding Spinner
 		SpinnerModel sm = new SpinnerNumberModel(2016, 1900, 2100, 1);
 		spYear = new JSpinner(sm);
+		spYear.addChangeListener(this);
 		top.add(spYear);
 		
 		//Creating bottom panel
@@ -81,6 +90,8 @@ public class StudentsFrame extends JFrame{
 		left.add(new JLabel("Groups:"), BorderLayout.NORTH);
 		//creating list, adding it to scroll panel
 		grpList = new JList<Object>(gr);
+		grpList.addListSelectionListener(this);
+		grpList.setSelectedIndex(0);
 		left.add(new JScrollPane(grpList), BorderLayout.CENTER);
 		
 		//Creating Buttons for groups
@@ -88,7 +99,10 @@ public class StudentsFrame extends JFrame{
 		btnMvGr.setName(MOVE_GR);
 		JButton btnClGr = new JButton("Clear");
 		btnClGr.setName(CLEAR_GR);
+		btnMvGr.addActionListener(this);
+		btnClGr.addActionListener(this);
 		
+		//creating panel for buttons
 		JPanel pnlBtnGr = new JPanel();
 		pnlBtnGr.setLayout(new GridLayout(1, 2));
 		pnlBtnGr.add(btnMvGr);
@@ -109,10 +123,13 @@ public class StudentsFrame extends JFrame{
 		//creating Buttons for Students
 		JButton btnAddSt = new JButton("Add");
 		btnAddSt.setName(INSERT_ST);
+		btnAddSt.addActionListener(this);
 		JButton btnUpdSt = new JButton("Update");
-		btnAddSt.setName(UPDATE_ST);
+		btnUpdSt.setName(UPDATE_ST);
+		btnUpdSt.addActionListener(this);
 		JButton btnDelSt = new JButton("Delete");
-		btnAddSt.setName(DELETE_ST);
+		btnDelSt.setName(DELETE_ST);
+		btnDelSt.addActionListener(this);
 		
 		//Creating Panel for Buttons
 		JPanel pnlBtnSt = new JPanel();
@@ -130,11 +147,71 @@ public class StudentsFrame extends JFrame{
 		getContentPane().add(top, BorderLayout.NORTH);
 		getContentPane().add(bot, BorderLayout.CENTER);
 		
-		//selecting first group by default
-		grpList.setSelectedIndex(0);
-		
 		setBounds(100, 100, 700, 500);
 	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() instanceof Component) {
+			Component c = (Component) e.getSource();
+			if (c.getName().equals(MOVE_GR)) {
+				moveGroup();
+			}
+			if (c.getName().equals(CLEAR_GR)) {
+				clearGroup();
+			}
+			if (c.getName().equals(ALL_STUDENTS)) {
+				showAllStudents();
+			}
+			if (c.getName().equals(INSERT_ST)) {
+				insertStudent();
+			}
+			if (c.getName().equals(UPDATE_ST)) {
+				updateStudent();
+			}
+			if (c.getName().equals(DELETE_ST)) {
+				deleteStudent();
+			}
+		}
+	}
+	
+	public void valueChanged(ListSelectionEvent e) {
+		if (!e.getValueIsAdjusting()) {
+			reloadStudents();
+		}
+	}
+	
+	public void stateChanged(ChangeEvent e) {
+		reloadStudents();
+	}
+	
+	public void reloadStudents() {
+		JOptionPane.showMessageDialog(this, "reloadStudents");
+	}
+	
+	public void moveGroup() {
+		JOptionPane.showMessageDialog(this, "moveGroup");
+	}
+	
+	public void clearGroup() {
+		JOptionPane.showMessageDialog(this, "clearGroup");
+	}
+	
+	public void insertStudent() {
+		JOptionPane.showMessageDialog(this, "insertStudent");
+	}
+	
+	public void updateStudent() {
+		JOptionPane.showMessageDialog(this, "updateStudent");
+	}
+	
+	public void deleteStudent() {
+		JOptionPane.showMessageDialog(this, "deleteStudent");
+	}
+	
+	public void showAllStudents() {
+		JOptionPane.showMessageDialog(this, "showAllStudents");
+	}
+	
 	
 	public static void main(String args[]) {
 		SwingUtilities.invokeLater(new Runnable() {
