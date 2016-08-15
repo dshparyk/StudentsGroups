@@ -7,6 +7,9 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.sql.SQLWarning;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.JButton;
@@ -32,6 +35,7 @@ import javax.swing.event.ListSelectionListener;
 
 import students.logic.Group;
 import students.logic.ManagementSystem;
+import students.logic.Student;
 
 public class StudentsFrame extends JFrame implements ActionListener, ListSelectionListener, ChangeListener{
 	
@@ -41,8 +45,6 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 	private static final String UPDATE_ST = "updateStudent";
 	private static final String DELETE_ST = "deleteStudent";
 	private static final String ALL_STUDENTS = "allStudent";
-	
-	//creating groupList, studentList and Year
 	private ManagementSystem ms = null;
 	private JList<Object> grpList;
 	private JTable stdList;
@@ -117,7 +119,7 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 		//adding students label
 		right.add(new JLabel("Students:"), BorderLayout.NORTH);
 		//creating table with scrolling panel
-		stdList = new JTable(1, 4);
+		stdList = new JTable(1, 3);
 		right.add(new JScrollPane(stdList), BorderLayout.CENTER);
 		
 		//creating Buttons for Students
@@ -185,7 +187,24 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 	}
 	
 	public void reloadStudents() {
-		JOptionPane.showMessageDialog(this, "reloadStudents");
+		Thread t = new Thread() {
+			public void run() {
+				if (stdList != null) {
+					Group g = (Group) grpList.getSelectedValue();
+					//getting year from spinner
+					int y = ((SpinnerNumberModel) spYear.getModel()).getNumber().intValue();
+					try {
+						//getting students list
+						Collection<Student> s = ms.getStudentsFromGroup(g, y);
+						//setting model for table with new data
+						stdList.setModel(new StudentTableModel(new Vector<Student>(s)));
+					} catch (SQLException e) {
+						JOptionPane.showMessageDialog(StudentsFrame.this, e.getMessage());
+					}
+				}
+			}
+		};
+		t.start();
 	}
 	
 	public void moveGroup() {
@@ -193,7 +212,25 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 	}
 	
 	public void clearGroup() {
-		JOptionPane.showMessageDialog(this, "clearGroup");
+		Thread t = new Thread() {
+			public void run() {
+				if (grpList.getSelectedValue() != null) {
+					if (JOptionPane.showConfirmDialog(StudentsFrame.this,
+							"Do you want to delete students from group?", "Delete students",
+							JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+						Group g = (Group) grpList.getSelectedValue();
+						int y = ((SpinnerNumberModel) spYear.getModel()).getNumber().intValue();
+						try {
+							ms.removeStudentsFromGroup(g, y);
+							reloadStudents();
+						} catch (SQLException e) {
+							JOptionPane.showMessageDialog(StudentsFrame.this, e.getMessage());
+						}
+					}
+				}
+			}
+		};
+		t.start();
 	}
 	
 	public void insertStudent() {
@@ -205,7 +242,29 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 	}
 	
 	public void deleteStudent() {
-		JOptionPane.showMessageDialog(this, "deleteStudent");
+		Thread t = new Thread() {
+			public void run() {
+				if (stdList != null) {
+					StudentTableModel stm = (StudentTableModel) stdList.getModel();
+					if (stdList.getSelectedRow() >= 0) {
+						if (JOptionPane.showConfirmDialog(StudentsFrame.this,
+								"Do you want to delete student?", "Delete student",
+								JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+							Student s = stm.getStudent(stdList.getSelectedRow());
+							try {
+								ms.deleteStudent(s);
+								reloadStudents();
+							} catch (SQLException e) {
+								JOptionPane.showMessageDialog(StudentsFrame.this, e.getMessage());
+							}
+						}
+					} else {
+						JOptionPane.showMessageDialog(StudentsFrame.this, "Please select student from the list");
+					}
+				}
+			}
+		};
+		t.start();
 	}
 	
 	public void showAllStudents() {
@@ -220,6 +279,7 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 					StudentsFrame sf = new StudentsFrame();
 					sf.setDefaultCloseOperation(EXIT_ON_CLOSE);
 					sf.setVisible(true);
+					sf.reloadStudents();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
