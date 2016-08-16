@@ -14,9 +14,9 @@ import java.util.List;
 public class ManagementSystem {
 	
 	private static Connection con;
-	//static field for Singleton
 	private static ManagementSystem instance;
 	
+	//getting connection to Database (mysql local on my PC at port 3306)
 	private ManagementSystem() throws Exception{
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
@@ -210,11 +210,3 @@ public class ManagementSystem {
     }
 
 }
-
-
-
-
-
-
-
-

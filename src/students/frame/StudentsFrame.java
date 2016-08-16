@@ -8,7 +8,6 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.sql.SQLWarning;
 import java.util.Collection;
 import java.util.Vector;
 
@@ -71,7 +70,7 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 		top.add(new JLabel("Year of education:"));
 		
 		//Adding Spinner
-		SpinnerModel sm = new SpinnerNumberModel(2016, 1900, 2100, 1);
+		SpinnerModel sm = new SpinnerNumberModel(2016, 1980, 2050, 1);
 		spYear = new JSpinner(sm);
 		spYear.addChangeListener(this);
 		top.add(spYear);
@@ -208,7 +207,25 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 	}
 	
 	public void moveGroup() {
-		JOptionPane.showMessageDialog(this, "moveGroup");
+		Thread t = new Thread() {
+			public void run() {
+				if (grpList.getSelectedValue() == null) return;
+				try {
+					Group g = (Group) grpList.getSelectedValue();
+					int y = ((SpinnerNumberModel) spYear.getModel()).getNumber().intValue();
+					GroupDialog gd = new GroupDialog(y, ms.getGroups());
+					gd.setModal(true);
+					gd.setVisible(true);
+					if (gd.getResult()) {
+						ms.moveStudentsToGroup(g, y, gd.getGroup(), gd.getYear());
+						reloadStudents();
+					}
+				} catch (SQLException e) {
+					JOptionPane.showMessageDialog(StudentsFrame.this, e.getMessage());
+				}
+			}
+		};
+		t.start();
 	}
 	
 	public void clearGroup() {
@@ -234,11 +251,54 @@ public class StudentsFrame extends JFrame implements ActionListener, ListSelecti
 	}
 	
 	public void insertStudent() {
-		JOptionPane.showMessageDialog(this, "insertStudent");
+		Thread t = new Thread() {
+            public void run() {
+                try {
+                    StudentDialog sd = new StudentDialog(ms.getGroups(), true, StudentsFrame.this);
+                    sd.setModal(true);
+                    sd.setVisible(true);
+                    if (sd.getResult()) {
+                        Student s = sd.getStudent();
+                        ms.insertStudent(s);
+                        reloadStudents();
+                    }
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(StudentsFrame.this, e.getMessage());
+                }
+            }
+        };
+        t.start();
 	}
 	
 	public void updateStudent() {
-		JOptionPane.showMessageDialog(this, "updateStudent");
+		Thread t = new Thread() {
+			public void run() {
+                if (stdList != null) {
+                    StudentTableModel stm = (StudentTableModel) stdList.getModel();
+                    if (stdList.getSelectedRow() >= 0) {
+                        Student s = stm.getStudent(stdList.getSelectedRow());
+                        try {
+                            StudentDialog sd = new StudentDialog(ms.getGroups(), false, StudentsFrame.this);
+                            sd.setStudent(s);
+                            sd.setModal(true);
+                            sd.setVisible(true);
+                            if (sd.getResult()) {
+                                Student us = sd.getStudent();
+                                ms.updateStudent(us);
+                                reloadStudents();
+                            }
+                        } catch (SQLException e) {
+                            JOptionPane.showMessageDialog(StudentsFrame.this, e.getMessage());
+                        }
+                    } 
+                    else {
+                        JOptionPane.showMessageDialog(StudentsFrame.this,
+                                "You need to select student in the list");
+                    }
+                }
+            }
+        };
+        t.start();
 	}
 	
 	public void deleteStudent() {

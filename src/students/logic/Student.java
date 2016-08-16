@@ -17,6 +17,10 @@ public class Student implements Comparable<Object> {
 	private int groupId;
 	private int educationYear;
 	
+	public Student() {
+		
+	}
+	
 	public Student(ResultSet rs) throws SQLException {
 		setStudentId(rs.getInt(1));
 		setFirstName(rs.getString(2));
