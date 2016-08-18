@@ -3,6 +3,7 @@
 bin
 target/
 build/
+WebContent/
 lib/
 .classpath
 .project
