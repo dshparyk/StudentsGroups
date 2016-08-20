@@ -2,10 +2,10 @@ package students.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import students.logic.Group;
 import students.logic.ManagementSystem;
 
-@WebServlet("/hello")
-public class TestServlet extends HttpServlet {
-
+public class SimpleList extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		PrintWriter pw = response.getWriter();
 		pw.println("<B>Group List</B>");
@@ -29,10 +27,9 @@ public class TestServlet extends HttpServlet {
 				pw.println("<td>" + gr.getCurator() + "</td>");
 				pw.println("<td>" + gr.getSpeciality() + "</td>");
 			}
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			throw new ServletException(e);
 		}
 		pw.println("</table>");
 	}
-
 }

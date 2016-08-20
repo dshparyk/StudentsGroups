@@ -17,8 +17,7 @@ public class Student implements Comparable<Object> {
 	private int groupId;
 	private int educationYear;
 	
-	public Student() {
-		
+	public Student() {	
 	}
 	
 	public Student(ResultSet rs) throws SQLException {
@@ -87,9 +86,7 @@ public class Student implements Comparable<Object> {
 	}
 	
 	public int compareTo(Object obj) {
-		Collator c = Collator.getInstance();
-		c.setStrength(Collator.PRIMARY);
-		return c.compare(this.toString(), obj.toString());
+		return this.toString().compareTo(obj.toString());
 	}
 
 }

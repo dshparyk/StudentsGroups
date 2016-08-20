@@ -40,5 +40,4 @@ public class Group {
 	public String toString() {
 		return nameGroup;
 	}
-	
 }
