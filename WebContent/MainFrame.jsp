@@ -40,7 +40,7 @@
 			<c:forEach var="student" items="${form.students }">
 			<tr>
 				<td><input type="radio" name="studentId" value="${student.studentId}"></td>
-                <td><c:out value="${student.surName}"/></td>
+                <td><c:out value="${student.lastName}"/></td>
                 <td><c:out value="${student.firstName}"/></td>
 			</tr>
 			</c:forEach>
@@ -73,16 +73,3 @@
 	</form>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-

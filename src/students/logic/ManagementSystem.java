@@ -137,9 +137,9 @@ public class ManagementSystem {
 	}
 	
 	public void updateStudent(Student student) throws SQLException {
-		PreparedStatement stmt = con.prepareStatement("UPDATE students SET" +
-					"firstName=?, surName=?, sex=?, dateOfBirth=?, group_id=?, educationYear=?" +
-                    "WHERE student_id=?");
+		PreparedStatement stmt = con.prepareStatement("UPDATE students "
+                + "SET firstName=?, surName=?, sex=?, dateOfBirth=?, group_id=?,"
+                + "educationYear=? WHERE student_id=?");
 		stmt.setString(1, student.getFirstName());
 		stmt.setString(2, student.getLastName());
 		stmt.setString(3, new String(new char[] {student.getSex()}));
